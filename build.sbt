@@ -1,8 +1,10 @@
 name := "scala-multibase"
 
-version := "0.0.1"
+version := "0.0.1-SNAPSHOT"
 
 organization := "com.github.fluency03"
+organizationName := "fluency03"
+organizationHomepage := Some(url("https://github.com/fluency03"))
 
 scalaVersion := "2.12.7"
 
@@ -15,10 +17,9 @@ val testDependencies = Seq(
 
 libraryDependencies ++= testDependencies
 
-// Maven settings
-publishMavenStyle := true
+sonatypeProfileName := "com.github.fluency03"
 
-publishArtifact in Test := false
+publishMavenStyle := true
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
@@ -28,21 +29,26 @@ publishTo := {
     Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
 
-pomIncludeRepository := { _ => false }
+scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/fluency03/scala-multibase"),
+    "scm:git@github.com:fluency03/scala-multibase.git"
+  )
+)
+
+developers := List(
+  Developer(
+    id  = "fluency03",
+    name = "Chang Liu",
+    email = "fluency.03@gmail.com",
+    url = url("https://github.com/fluency03")
+  )
+)
+
+description := "Scala Implementation of Multibase."
 
 licenses := Seq("MIT" -> url("https://raw.githubusercontent.com/fluency03/scala-multibase/master/LICENSE"))
 
 homepage := Some(url("https://github.com/fluency03/scala-multibase"))
 
-pomExtra :=
-  <scm>
-    <url>git@github.com:fluency03/scala-multibase.git</url>
-    <connection>scm:git:git@github.com:fluency03/scala-multibase.git</connection>
-  </scm>
-  <developers>
-    <developer>
-      <id>fluency03</id>
-      <name>fluency03</name>
-      <url>https://github.com/fluency03</url>
-    </developer>
-  </developers>
+pomIncludeRepository := { _ => false }
