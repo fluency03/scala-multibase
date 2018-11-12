@@ -1,6 +1,6 @@
 package com.github.fluency03.multibase
 
-object Identity {
+object IdentityImpl {
 
   def encode(data: Array[Byte]): String = data.map(_.toChar).mkString
 

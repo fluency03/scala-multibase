@@ -1,33 +1,35 @@
 package com.github.fluency03.multibase
 
+import com.github.fluency03.multibase.Base._
+
 object Multibase {
 
   def encode(base: Base, data: Array[Byte]): String = base.code + {
     base match {
-      case Base.Base1 => throw new UnsupportedOperationException("Base1 is not supported yet!")
-      case Base.Identity => Identity.encode(data)
-      case Base.Base16 => Base16.encode(data)
-      case Base.Base16Upper => Base16Upper.encode(data)
+      case Base1 => throw new UnsupportedOperationException("Base1 is not supported yet!")
+      case Identity => IdentityImpl.encode(data)
+      case Base16 => Base16Impl.encode(data)
+      case Base16Upper => Base16UpperImpl.encode(data)
       case _ => BaseN.encode(base, data)
     }
   }
 
-  def encodeString(base: Base, data: String): String = encode(base, data.getBytes())
+  def encodeString(base: Base, data: String): String = encode(base, data.toCharArray.map(_.toByte))
 
   def decode(data: String): Array[Byte] = {
     val baseOpt = Base.codes.get(data.charAt(0))
     if (baseOpt.isEmpty) {
-      throw new IllegalArgumentException("Cannot get Multibase type from input: " + data)
+      throw new IllegalArgumentException("Cannot get Multibase type from input data: " + data)
     }
 
     val base = baseOpt.get
     val rest = data.substring(1)
-
-    base match {
-      case Base.Base1 => throw new UnsupportedOperationException("Base1 is not supported yet!")
-      case Base.Identity => Identity.decode(rest)
-      case Base.Base16 => Base16.decode(rest)
-      case Base.Base16Upper => Base16Upper.decode(rest)
+    if (rest.isEmpty) Array[Byte]()
+    else base match {
+      case Base1 => throw new UnsupportedOperationException("Base1 is not supported yet!")
+      case Identity => IdentityImpl.decode(rest)
+      case Base16 => Base16Impl.decode(rest)
+      case Base16Upper => Base16UpperImpl.decode(rest)
       case _ => BaseN.decode(base, rest)
     }
   }

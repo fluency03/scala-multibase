@@ -76,4 +76,6 @@ object Base {
     Base64URLPad.name -> Base64URLPad
   )
 
+  lazy val unsupported: Map[Char, Base] = Map(Base1.code -> Base1)
+
 }
