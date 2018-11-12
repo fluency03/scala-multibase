@@ -8,8 +8,8 @@ object Multibase {
     base match {
       case Base1 => throw new UnsupportedOperationException("Base1 is not supported yet!")
       case Identity => IdentityImpl.encode(data)
-      case Base16 => Base16Impl.encode(data)
-      case Base16Upper => Base16UpperImpl.encode(data)
+      case Base16 => Base16Impl.encodeToLower(data)
+      case Base16Upper => Base16Impl.encodeToUpper(data)
       case _ => BaseN.encode(base, data)
     }
   }
@@ -29,7 +29,7 @@ object Multibase {
       case Base1 => throw new UnsupportedOperationException("Base1 is not supported yet!")
       case Identity => IdentityImpl.decode(rest)
       case Base16 => Base16Impl.decode(rest)
-      case Base16Upper => Base16UpperImpl.decode(rest)
+      case Base16Upper => Base16Impl.decode(rest)
       case _ => BaseN.decode(base, rest)
     }
   }
