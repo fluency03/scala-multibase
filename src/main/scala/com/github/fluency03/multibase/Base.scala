@@ -1,30 +1,60 @@
 package com.github.fluency03.multibase
 
-sealed abstract class Base(val name: String, val code: Char, val alphabet: String, val size: Int)
+sealed abstract class Base(
+    val name: String,
+    val code: Char,
+    val alphabet: String,
+    val pad: Option[Char]) {
+
+  lazy val alphabetPos: Map[Char, Int] = (for (i <- alphabet.indices) yield alphabet(i) -> i).toMap
+
+}
+
+sealed class Base16RFC4648(
+    override val name: String,
+    override val code: Char,
+    override val alphabet: String,
+    override val pad: Option[Char])
+  extends Base(name, code, alphabet, pad)
+
+sealed class Base32RFC4648(
+  override val name: String,
+  override val code: Char,
+  override val alphabet: String,
+  override val pad: Option[Char])
+  extends Base(name, code, alphabet, pad)
+
+sealed class Base64RFC4648(
+  override val name: String,
+  override val code: Char,
+  override val alphabet: String,
+  override val pad: Option[Char])
+  extends Base(name, code, alphabet, pad)
+
 
 object Base {
-  case object Identity extends Base("identity", 0x00, "", 0)
-  case object Base1 extends Base("base1", '1', "1", 1)
-  case object Base2 extends Base("base2", '0', "01", 2)
-  case object Base8 extends Base("base8", '7', "01234567", 8)
-  case object Base10 extends Base("base10", '9', "0123456789", 10)
-  case object Base16 extends Base("base16", 'f', "0123456789abcdef", 16)
-  case object Base16Upper extends Base("base16upper", 'F', "0123456789ABCDEF", 16)
-  case object Base32 extends Base("base32", 'b', "abcdefghijklmnopqrstuvwxyz234567", 32)
-  case object Base32Upper extends Base("base32upper", 'B', "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", 32)
-  case object Base32Pad extends Base("base32pad", 'c', "abcdefghijklmnopqrstuvwxyz234567=", 32)
-  case object Base32PadUpper extends Base("base32padupper", 'C', "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=", 32)
-  case object Base32Hex extends Base("base32hex", 'v', "0123456789abcdefghijklmnopqrstuv", 32)
-  case object Base32HexUpper extends Base("base32hexupper", 'V', "0123456789ABCDEFGHIJKLMNOPQRSTUV", 32)
-  case object Base32HexPad extends Base("base32hexpad", 't', "0123456789abcdefghijklmnopqrstuv=", 32)
-  case object Base32HexPadUpper extends Base("base32hexpadupper", 'T', "0123456789ABCDEFGHIJKLMNOPQRSTUV=", 32)
-  case object Base32Z extends Base("base32z", 'h', "ybndrfg8ejkmcpqxot1uwisza345h769", 32)
-  case object Base58Flickr extends Base("base58flickr", 'Z', "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ", 58)
-  case object Base58BTC extends Base("base58btc", 'z', "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz", 58)
-  case object Base64 extends Base("base64", 'm', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", 64)
-  case object Base64Pad extends Base("base64pad", 'M', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=", 64)
-  case object Base64URL extends Base("base64url", 'u', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", 64)
-  case object Base64URLPad extends Base("base64urlpad", 'U', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=", 64)
+  case object Identity extends Base("identity", 0x00, "", None)
+  case object Base1 extends Base("base1", '1', "1", None)
+  case object Base2 extends Base("base2", '0', "01", None)
+  case object Base8 extends Base("base8", '7', "01234567", None)
+  case object Base10 extends Base("base10", '9', "0123456789", None)
+  case object Base16 extends Base16RFC4648("base16", 'f', "0123456789abcdef", None)
+  case object Base16Upper extends Base16RFC4648("base16upper", 'F', "0123456789ABCDEF", None)
+  case object Base32 extends Base32RFC4648("base32", 'b', "abcdefghijklmnopqrstuvwxyz234567", None)
+  case object Base32Upper extends Base32RFC4648("base32upper", 'B', "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", None)
+  case object Base32Pad extends Base32RFC4648("base32pad", 'c', "abcdefghijklmnopqrstuvwxyz234567", Some('='))
+  case object Base32PadUpper extends Base32RFC4648("base32padupper", 'C', "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", Some('='))
+  case object Base32Hex extends Base32RFC4648("base32hex", 'v', "0123456789abcdefghijklmnopqrstuv", None)
+  case object Base32HexUpper extends Base32RFC4648("base32hexupper", 'V', "0123456789ABCDEFGHIJKLMNOPQRSTUV", None)
+  case object Base32HexPad extends Base32RFC4648("base32hexpad", 't', "0123456789abcdefghijklmnopqrstuv", Some('='))
+  case object Base32HexPadUpper extends Base32RFC4648("base32hexpadupper", 'T', "0123456789ABCDEFGHIJKLMNOPQRSTUV", Some('='))
+  case object Base32Z extends Base("base32z", 'h', "ybndrfg8ejkmcpqxot1uwisza345h769", None)
+  case object Base58Flickr extends Base("base58flickr", 'Z', "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ", None)
+  case object Base58BTC extends Base("base58btc", 'z', "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz", None)
+  case object Base64 extends Base64RFC4648("base64", 'm', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", None)
+  case object Base64Pad extends Base64RFC4648("base64pad", 'M', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", Some('='))
+  case object Base64URL extends Base64RFC4648("base64url", 'u', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", None)
+  case object Base64URLPad extends Base64RFC4648("base64urlpad", 'U', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", Some('='))
 
   lazy val codes: Map[Char, Base] = Map(
     Identity.code -> Identity,

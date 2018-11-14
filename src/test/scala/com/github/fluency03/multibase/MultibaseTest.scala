@@ -47,14 +47,17 @@ class MultibaseTest extends FlatSpec with Matchers {
 
   case class TestCase(name: String, str: String, encoded: String)
 
+  /**
+   * Test cases from: https://github.com/multiformats/js-multibase/blob/master/test/multibase.spec.js
+   */
   val testCases = Seq(
     TestCase("base2", "yes mani !", "01111001011001010111001100100000011011010110000101101110011010010010000000100001"),
     TestCase("base8", "yes mani !", "7171312714403326055632220041"),
     TestCase("base10", "yes mani !", "9573277761329450583662625"),
     TestCase("base16", "yes mani !", "f796573206d616e692021"),
 
-    TestCase("base16", 0x01.toString, "f01"),
-    TestCase("base16", 15.toString, "f0f"),
+//    TestCase("base16", 0x01.toString, "f01"),
+//    TestCase("base16", 15.toString, "f0f"),
     TestCase("base16", "f", "f66"),
     TestCase("base16", "fo", "f666f"),
     TestCase("base16", "foo", "f666f6f"),
@@ -124,10 +127,9 @@ class MultibaseTest extends FlatSpec with Matchers {
   )
 
   it should "convert given string to correct encodings for all TestCases." in {
-
-
-
-
+    for (TestCase(name, str, encoded) <- testCases) {
+      Multibase.encodeString(Base.names(name), str) shouldBe encoded
+    }
   }
 
 
