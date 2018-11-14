@@ -5,11 +5,11 @@ import org.scalatest.{FlatSpec, Matchers}
 class MultibaseTest extends FlatSpec with Matchers {
 
   it should "contains correct code and name mappings for the Base." in {
-    Base.codes.foreach{
+    Base.Codes.foreach{
       case (code, base) => base.code shouldBe code
     }
 
-    Base.names.foreach{
+    Base.Names.foreach{
       case (name, base) => base.name shouldBe name
     }
   }
@@ -17,7 +17,7 @@ class MultibaseTest extends FlatSpec with Matchers {
   it should "convert given string to correct encodings." in {
     val str = "Multibase is awesome! \\o/"
 
-    for (base <- Base.codes.values if base != Base.Base1) {
+    for (base <- Base.Codes.values if base != Base.Base1) {
       Multibase.decodeToString(Multibase.encodeString(base, str)) shouldBe str
     }
 
@@ -25,8 +25,8 @@ class MultibaseTest extends FlatSpec with Matchers {
       Multibase.decodeToString(Multibase.encodeString(Base.Base1, str))
     } should have message "Base1 is not supported yet!"
 
-    Base.unsupported.size shouldBe 1
-    Base.unsupported(Base.Base1.code) shouldBe Base.Base1
+    Base.Unsupported.size shouldBe 1
+    Base.Unsupported(Base.Base1.code) shouldBe Base.Base1
 
     val illegalDate = "abc"
     the [IllegalArgumentException] thrownBy {
@@ -40,7 +40,7 @@ class MultibaseTest extends FlatSpec with Matchers {
 
     for (
       s <- strs;
-      base <- Base.codes.values if base != Base.Base1
+      base <- Base.Codes.values if base != Base.Base1
     ) Multibase.decodeToString(Multibase.encodeString(base, s)) shouldBe s
 
   }
@@ -57,7 +57,7 @@ class MultibaseTest extends FlatSpec with Matchers {
     TestCase("base16", "yes mani !", "f796573206d616e692021"),
 
 //    TestCase("base16", 0x01.toString, "f01"),
-//    TestCase("base16", 15.toString, "f0f"),
+//    TestCase("base16", 0x0f.toString, "f0f"),
     TestCase("base16", "f", "f66"),
     TestCase("base16", "fo", "f666f"),
     TestCase("base16", "foo", "f666f6f"),
@@ -73,6 +73,14 @@ class MultibaseTest extends FlatSpec with Matchers {
     TestCase("base32", "fooba", "bmzxw6ytb"),
     TestCase("base32", "foobar", "bmzxw6ytboi"),
 
+    TestCase("base32upper", "yes mani !", "bpfsxgidnmfxgsibb".toUpperCase),
+    TestCase("base32upper", "f", "bmy".toUpperCase),
+    TestCase("base32upper", "fo", "bmzxq".toUpperCase),
+    TestCase("base32upper", "foo", "bmzxw6".toUpperCase),
+    TestCase("base32upper", "foob", "bmzxw6yq".toUpperCase),
+    TestCase("base32upper", "fooba", "bmzxw6ytb".toUpperCase),
+    TestCase("base32upper", "foobar", "bmzxw6ytboi".toUpperCase),
+
     TestCase("base32pad", "yes mani !", "cpfsxgidnmfxgsibb"),
     TestCase("base32pad", "f", "cmy======"),
     TestCase("base32pad", "fo", "cmzxq===="),
@@ -80,6 +88,14 @@ class MultibaseTest extends FlatSpec with Matchers {
     TestCase("base32pad", "foob", "cmzxw6yq="),
     TestCase("base32pad", "fooba", "cmzxw6ytb"),
     TestCase("base32pad", "foobar", "cmzxw6ytboi======"),
+
+    TestCase("base32padupper", "yes mani !", "cpfsxgidnmfxgsibb".toUpperCase),
+    TestCase("base32padupper", "f", "cmy======".toUpperCase),
+    TestCase("base32padupper", "fo", "cmzxq====".toUpperCase),
+    TestCase("base32padupper", "foo", "cmzxw6===".toUpperCase),
+    TestCase("base32padupper", "foob", "cmzxw6yq=".toUpperCase),
+    TestCase("base32padupper", "fooba", "cmzxw6ytb".toUpperCase),
+    TestCase("base32padupper", "foobar", "cmzxw6ytboi======".toUpperCase),
 
     TestCase("base32hex", "yes mani !", "vf5in683dc5n6i811"),
     TestCase("base32hex", "f", "vco"),
@@ -89,6 +105,14 @@ class MultibaseTest extends FlatSpec with Matchers {
     TestCase("base32hex", "fooba", "vcpnmuoj1"),
     TestCase("base32hex", "foobar", "vcpnmuoj1e8"),
 
+    TestCase("base32hexupper", "yes mani !", "vf5in683dc5n6i811".toUpperCase),
+    TestCase("base32hexupper", "f", "vco".toUpperCase),
+    TestCase("base32hexupper", "fo", "vcpng".toUpperCase),
+    TestCase("base32hexupper", "foo", "vcpnmu".toUpperCase),
+    TestCase("base32hexupper", "foob", "vcpnmuog".toUpperCase),
+    TestCase("base32hexupper", "fooba", "vcpnmuoj1".toUpperCase),
+    TestCase("base32hexupper", "foobar", "vcpnmuoj1e8".toUpperCase),
+
     TestCase("base32hexpad", "yes mani !", "tf5in683dc5n6i811"),
     TestCase("base32hexpad", "f", "tco======"),
     TestCase("base32hexpad", "fo", "tcpng===="),
@@ -96,6 +120,14 @@ class MultibaseTest extends FlatSpec with Matchers {
     TestCase("base32hexpad", "foob", "tcpnmuog="),
     TestCase("base32hexpad", "fooba", "tcpnmuoj1"),
     TestCase("base32hexpad", "foobar", "tcpnmuoj1e8======"),
+
+    TestCase("base32hexpadupper", "yes mani !", "tf5in683dc5n6i811".toUpperCase),
+    TestCase("base32hexpadupper", "f", "tco======".toUpperCase),
+    TestCase("base32hexpadupper", "fo", "tcpng====".toUpperCase),
+    TestCase("base32hexpadupper", "foo", "tcpnmu===".toUpperCase),
+    TestCase("base32hexpadupper", "foob", "tcpnmuog=".toUpperCase),
+    TestCase("base32hexpadupper", "fooba", "tcpnmuoj1".toUpperCase),
+    TestCase("base32hexpadupper", "foobar", "tcpnmuoj1e8======".toUpperCase),
 
     TestCase("base32z", "yes mani !", "hxf1zgedpcfzg1ebb"),
     TestCase("base58flickr", "yes mani !", "Z7Pznk19XTTzBtx"),
@@ -127,8 +159,11 @@ class MultibaseTest extends FlatSpec with Matchers {
   )
 
   it should "convert given string to correct encodings for all TestCases." in {
-    for (TestCase(name, str, encoded) <- testCases) {
-      Multibase.encodeString(Base.names(name), str) shouldBe encoded
+    for (TestCase(name, str, expEncoded) <- testCases) {
+      val base = Base.Names(name)
+      val encoded = Multibase.encodeString(base, str)
+      encoded shouldBe expEncoded
+      Multibase.decodeToString(expEncoded) shouldBe str
     }
   }
 

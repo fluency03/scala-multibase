@@ -2,7 +2,7 @@
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
-> Scala Implementation of Multibase.
+> Scala Implementation of [Multibase](https://github.com/multiformats/multibase).
 
 TODO: Fill out this long description.
 

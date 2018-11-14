@@ -1,10 +1,10 @@
 package com.github.fluency03.multibase
 
+
 sealed abstract class Base(
     val name: String,
     val code: Char,
-    val alphabet: String,
-    val pad: Option[Char]) {
+    val alphabet: String) {
 
   lazy val alphabetPos: Map[Char, Int] = (for (i <- alphabet.indices) yield alphabet(i) -> i).toMap
 
@@ -14,49 +14,82 @@ sealed class Base16RFC4648(
     override val name: String,
     override val code: Char,
     override val alphabet: String,
-    override val pad: Option[Char])
-  extends Base(name, code, alphabet, pad)
+    val pad: Option[Char])
+  extends Base(name, code, alphabet)
 
 sealed class Base32RFC4648(
   override val name: String,
   override val code: Char,
   override val alphabet: String,
-  override val pad: Option[Char])
-  extends Base(name, code, alphabet, pad)
+  val pad: Option[Char])
+  extends Base(name, code, alphabet)
 
 sealed class Base64RFC4648(
   override val name: String,
   override val code: Char,
   override val alphabet: String,
-  override val pad: Option[Char])
-  extends Base(name, code, alphabet, pad)
+  val pad: Option[Char])
+  extends Base(name, code, alphabet)
 
 
 object Base {
-  case object Identity extends Base("identity", 0x00, "", None)
-  case object Base1 extends Base("base1", '1', "1", None)
-  case object Base2 extends Base("base2", '0', "01", None)
-  case object Base8 extends Base("base8", '7', "01234567", None)
-  case object Base10 extends Base("base10", '9', "0123456789", None)
+
+  /**
+   * Reference: https://github.com/multiformats/multibase/blob/master/multibase.csv
+   * encoding      codes   name
+   *
+   * identity      0x00    8-bit binary (encoder and decoder keeps data unmodified)
+   * base1         1       unary tends to be 11111
+   * base2         0       binary has 1 and 0
+   * base8         7       highest char in octal
+   * base10        9       highest char in decimal
+   * base16        F, f    highest char in hex
+   * base32        B, b    rfc4648 - no padding - highest letter
+   * base32pad     C, c    rfc4648 - with padding
+   * base32hex     V, v    rfc4648 - no padding - highest char
+   * base32hexpad  T, t    rfc4648 - with padding
+   * base32z       h       z-base-32 - used by Tahoe-LAFS - highest letter
+   * base58flickr  Z       highest char
+   * base58btc     z       highest char
+   * base64        m       rfc4648 - no padding
+   * base64pad     M       rfc4648 - with padding - MIME encoding
+   * base64url     u       rfc4648 - no padding
+   * base64urlpad  U       rfc4648 - with padding
+   */
+
+  case object Identity extends Base("identity", 0x00, "")
+  case object Base1 extends Base("base1", '1', "1")
+  case object Base2 extends Base("base2", '0', "01")
+  case object Base8 extends Base("base8", '7', "01234567")
+  case object Base10 extends Base("base10", '9', "0123456789")
+
   case object Base16 extends Base16RFC4648("base16", 'f', "0123456789abcdef", None)
   case object Base16Upper extends Base16RFC4648("base16upper", 'F', "0123456789ABCDEF", None)
+
   case object Base32 extends Base32RFC4648("base32", 'b', "abcdefghijklmnopqrstuvwxyz234567", None)
   case object Base32Upper extends Base32RFC4648("base32upper", 'B', "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", None)
   case object Base32Pad extends Base32RFC4648("base32pad", 'c', "abcdefghijklmnopqrstuvwxyz234567", Some('='))
   case object Base32PadUpper extends Base32RFC4648("base32padupper", 'C', "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", Some('='))
+
   case object Base32Hex extends Base32RFC4648("base32hex", 'v', "0123456789abcdefghijklmnopqrstuv", None)
   case object Base32HexUpper extends Base32RFC4648("base32hexupper", 'V', "0123456789ABCDEFGHIJKLMNOPQRSTUV", None)
   case object Base32HexPad extends Base32RFC4648("base32hexpad", 't', "0123456789abcdefghijklmnopqrstuv", Some('='))
   case object Base32HexPadUpper extends Base32RFC4648("base32hexpadupper", 'T', "0123456789ABCDEFGHIJKLMNOPQRSTUV", Some('='))
-  case object Base32Z extends Base("base32z", 'h', "ybndrfg8ejkmcpqxot1uwisza345h769", None)
-  case object Base58Flickr extends Base("base58flickr", 'Z', "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ", None)
-  case object Base58BTC extends Base("base58btc", 'z', "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz", None)
+
+  case object Base32Z extends Base("base32z", 'h', "ybndrfg8ejkmcpqxot1uwisza345h769")
+  case object Base58Flickr extends Base("base58flickr", 'Z', "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ")
+  case object Base58BTC extends Base("base58btc", 'z', "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
+
   case object Base64 extends Base64RFC4648("base64", 'm', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", None)
   case object Base64Pad extends Base64RFC4648("base64pad", 'M', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", Some('='))
   case object Base64URL extends Base64RFC4648("base64url", 'u', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", None)
   case object Base64URLPad extends Base64RFC4648("base64urlpad", 'U', "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", Some('='))
 
-  lazy val codes: Map[Char, Base] = Map(
+
+  /**
+   * Mappings from Base Code -> Base
+   */
+  lazy val Codes: Map[Char, Base] = Map(
     Identity.code -> Identity,
     Base1.code -> Base1,
     Base2.code -> Base2,
@@ -78,10 +111,13 @@ object Base {
     Base64.code -> Base64,
     Base64Pad.code -> Base64Pad,
     Base64URL.code -> Base64URL,
-    Base64URLPad.code -> Base64URLPad
-  )
+    Base64URLPad.code -> Base64URLPad)
 
-  lazy val names: Map[String, Base]  = Map(
+
+  /**
+   * Mappings from Base Name -> Base
+   */
+  lazy val Names: Map[String, Base]  = Map(
     Identity.name -> Identity,
     Base1.name -> Base1,
     Base2.name -> Base2,
@@ -103,9 +139,12 @@ object Base {
     Base64.name -> Base64,
     Base64Pad.name -> Base64Pad,
     Base64URL.name -> Base64URL,
-    Base64URLPad.name -> Base64URLPad
-  )
+    Base64URLPad.name -> Base64URLPad)
 
-  lazy val unsupported: Map[Char, Base] = Map(Base1.code -> Base1)
+
+  /**
+   * Unsupported Base.
+   */
+  lazy val Unsupported: Map[Char, Base] = Map(Base1.code -> Base1)
 
 }

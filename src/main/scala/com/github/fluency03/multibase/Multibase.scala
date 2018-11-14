@@ -29,7 +29,7 @@ object Multibase {
   def encodeString(base: Base, data: String): String = encode(base, data.getBytes)
 
   def decode(data: String): Array[Byte] = {
-    val baseOpt = Base.codes.get(data.charAt(0))
+    val baseOpt = Base.Codes.get(data.charAt(0))
     if (baseOpt.isEmpty) {
       throw new IllegalArgumentException("Cannot get Multibase type from input data: " + data)
     }

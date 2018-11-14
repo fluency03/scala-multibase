@@ -4,12 +4,17 @@ import scala.annotation.tailrec
 
 object Base32Impl {
   // operator precedence in descending order: >>> or <<, &, |
-  private val BitGroupSize: Int = 5
-  private val CommonGroupSize: Int = 8
+  private val NumGroupsBeforeEncodeInLeastCommonLength: Int = 5
+  private val NumGroupsAfterEncodeInLeastCommonLength: Int = 8
 
+  /**
+   * Encode the given data as an Array of Bytes into a String, based on specified Base32 version,
+   * which has to be a Base32RFC4648.
+   */
   def encode(data: Array[Byte], base32: Base32RFC4648): String =
     if (data.isEmpty) ""
-    else data.grouped(BitGroupSize)
+    else data
+      .grouped(NumGroupsBeforeEncodeInLeastCommonLength)
       .map(g => encodeBytes(g, base32.alphabet.toCharArray, base32.pad))
       .mkString
 
@@ -69,20 +74,24 @@ object Base32Impl {
     ).mkString
 
 
-
+  /**
+   * Decode the given data as a String into a Byte Array, based on specified Base32 version,
+   * which has to be a Base32RFC4648.
+   */
   def decode(data: String, base32: Base32RFC4648): Array[Byte] = {
     val chars = data.toCharArray
     val length = chars.length
     val pads = if (base32.pad.isEmpty) 0 else numPads(chars, 0, length - 1, base32.pad.get)
     val pos = base32.alphabetPos
-    chars.slice(0, length - pads).grouped(CommonGroupSize)
+    chars.slice(0, length - pads)
+      .grouped(NumGroupsAfterEncodeInLeastCommonLength)
       .map(g => decodeBytes(g, pos))
       .foldLeft(Array[Byte]())( _ ++ _ )
   }
 
   @tailrec
   private def numPads(chars: Array[Char], pads: Int, last: Int, pad: Char): Int =
-    if (last < 0 || pads >= BitGroupSize || chars(last) != pad) pads
+    if (last < 0 || pads >= NumGroupsBeforeEncodeInLeastCommonLength || chars(last) != pad) pads
     else numPads(chars, pads + 1, last - 1, pad)
 
   private def decodeBytes(group: Array[Char], pos: Map[Char, Int]): Array[Byte] =
