@@ -1,6 +1,6 @@
 name := "scala-multibase"
 
-version := "0.0.1-SNAPSHOT"
+version := "0.0.1"
 
 organization := "com.github.fluency03"
 organizationName := "fluency03"
