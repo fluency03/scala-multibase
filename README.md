@@ -37,6 +37,36 @@ libraryDependencies += "com.github.fluency03" % "scala-multibase_2.12" % {latest
 
 ## Usage
 
+```scala
+import com.github.fluency03.multibase.Multibase
+import com.github.fluency03.multibase.Base._
+
+val str = "Multibase is awesome! \\o/"
+
+Multibase.encodeString(Base32Upper, str)              // BJV2WY5DJMJQXGZJANFZSAYLXMVZW63LFEEQFY3ZP
+Multibase.encodeString(Base32Pad, str)                // cjv2wy5djmjqxgzjanfzsaylxmvzw63lfeeqfy3zp
+Multibase.encodeString(Base32PadUpper, str)           // CJV2WY5DJMJQXGZJANFZSAYLXMVZW63LFEEQFY3ZP
+
+Multibase.encodeString(Base32Z, str)                  // hji4sa7djcjozg3jypf31yamzci3s65mfrrofa53x
+Multibase.encodeString(Base58Flickr, str)             // ZxaJjNnAzU5jHQLhoLrXxcVM66Ca1VkLWAT
+Multibase.encodeString(Base58BTC, str)                // zYAjKoNbau5KiqmHPmSxYCvn66dA1vLmwbt
+
+Multibase.encodeString(Base64, str)                   // mTXVsdGliYXNlIGlzIGF3ZXNvbWUhIFxvLw
+Multibase.encodeString(Base64Pad, str)                // MTXVsdGliYXNlIGlzIGF3ZXNvbWUhIFxvLw==
+Multibase.encodeString(Base64URL, str)                // uTXVsdGliYXNlIGlzIGF3ZXNvbWUhIFxvLw
+Multibase.encodeString(Base64URLPad, str)             // UTXVsdGliYXNlIGlzIGF3ZXNvbWUhIFxvLw==
+
+
+val encodedStr: String = Multibase.encode(Base16, str.getBytes)
+// encodedStr: String = f4d756c74696261736520697320617765736f6d6521205c6f2f
+
+val decodedBytes: Array[Byte] = Multibase.decode(encodedStr)
+// decodedBytes: Array[Byte] = Array(77, 117, 108, 116, 105, 98, 97, 115, 101, 32, 105, 115, 32, 97, 119, 101, 115, 111, 109, 101, 33, 32, 92, 111, 47)
+
+val decodedStr = new String(decodedBytes)
+// decodedStr: String = Multibase is awesome! \o/
+```
+
 ## API
 
 ## Maintainers
