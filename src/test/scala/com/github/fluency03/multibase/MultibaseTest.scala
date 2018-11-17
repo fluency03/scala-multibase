@@ -163,7 +163,10 @@ class MultibaseTest extends FlatSpec with Matchers {
       val base = Base.Names(name)
       val encoded = Multibase.encodeString(base, str)
       encoded shouldBe expEncoded
-      Multibase.decodeToString(expEncoded) shouldBe str
+      val decoded = Multibase.decodeToString(expEncoded)
+      decoded shouldBe str
+      base.encode(str.getBytes) shouldBe expEncoded
+      base.encodeString(str) shouldBe expEncoded
     }
   }
 
