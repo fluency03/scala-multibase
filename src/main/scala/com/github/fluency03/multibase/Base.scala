@@ -8,6 +8,10 @@ sealed abstract class Base(
 
   lazy val alphabetPos: Map[Char, Int] = (for (i <- alphabet.indices) yield alphabet(i) -> i).toMap
 
+  def encode(data: Array[Byte]): String = Multibase.encode(this, data)
+
+  def encodeString(data: String): String = Multibase.encodeString(this, data)
+
 }
 
 sealed class Base16RFC4648(
@@ -18,17 +22,17 @@ sealed class Base16RFC4648(
   extends Base(name, code, alphabet)
 
 sealed class Base32RFC4648(
-  override val name: String,
-  override val code: Char,
-  override val alphabet: String,
-  val pad: Option[Char])
+    override val name: String,
+    override val code: Char,
+    override val alphabet: String,
+    val pad: Option[Char])
   extends Base(name, code, alphabet)
 
 sealed class Base64RFC4648(
-  override val name: String,
-  override val code: Char,
-  override val alphabet: String,
-  val pad: Option[Char])
+    override val name: String,
+    override val code: Char,
+    override val alphabet: String,
+    val pad: Option[Char])
   extends Base(name, code, alphabet)
 
 
