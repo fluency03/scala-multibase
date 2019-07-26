@@ -6,7 +6,6 @@ object Multibase {
 
   def encode(base: Base, data: Array[Byte]): String = base.code + {
     base match {
-      case Base1 => throw new UnsupportedOperationException("Base1 is not supported yet!")
       case Identity => IdentityImpl.encode(data)
       case Base16 => Base16Impl.encode(data, Base16)
       case Base16Upper => Base16Impl.encode(data, Base16Upper)
@@ -38,7 +37,6 @@ object Multibase {
     val rest = data.substring(1)
     if (rest.isEmpty) Array[Byte]()
     else base match {
-      case Base1 => throw new UnsupportedOperationException("Base1 is not supported yet!")
       case Identity => IdentityImpl.decode(rest)
       case Base16 => Base16Impl.decode(rest, Base16)
       case Base16Upper => Base16Impl.decode(rest, Base16Upper)
