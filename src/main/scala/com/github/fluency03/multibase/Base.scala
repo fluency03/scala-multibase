@@ -62,7 +62,6 @@ object Base {
    */
 
   case object Identity extends Base("identity", 0x00, "")
-  case object Base1 extends Base("base1", '1', "1")
   case object Base2 extends Base("base2", '0', "01")
   case object Base8 extends Base("base8", '7', "01234567")
   case object Base10 extends Base("base10", '9', "0123456789")
@@ -95,7 +94,6 @@ object Base {
    */
   lazy val Codes: Map[Char, Base] = Map(
     Identity.code -> Identity,
-    Base1.code -> Base1,
     Base2.code -> Base2,
     Base8.code -> Base8,
     Base10.code -> Base10,
@@ -123,7 +121,6 @@ object Base {
    */
   lazy val Names: Map[String, Base]  = Map(
     Identity.name -> Identity,
-    Base1.name -> Base1,
     Base2.name -> Base2,
     Base8.name -> Base8,
     Base10.name -> Base10,
@@ -149,6 +146,6 @@ object Base {
   /**
    * Unsupported Base.
    */
-  lazy val Unsupported: Map[Char, Base] = Map(Base1.code -> Base1)
+  lazy val Unsupported: Map[Char, Base] = Map()
 
 }
